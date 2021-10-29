@@ -1,0 +1,21 @@
+.user {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    max-width: 25%;
+    background: #F9F9FE;
+    border-radius: 8px;
+    border: 1px solid black;
+    margin: 1%;
+    padding: 2%;
+}
+
+.userPhoto {
+    width: 50px;
+}
+
+.userTop {
+    display: flex;
+    justify-content: center;
+}
