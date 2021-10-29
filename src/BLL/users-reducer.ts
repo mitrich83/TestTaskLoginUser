@@ -58,15 +58,17 @@ const initialState: UsersDataType = {
 const usersReducer = (state: UsersDataType = initialState, action: ActionCreatorTypes): UsersDataType => {
     switch (action.type) {
         case SET_USERS:
-
-
-        case UPDATE_USER:
         case TOGGLE_IS_FETCHING:
             return {...state, ...action.payload}
 
         case REMOVE_USER: {
             debugger
             return {...state, users: state.users.filter(u=> u.id !== action.payload.userId)}
+        }
+        case UPDATE_USER: {
+            return {
+                ...state, users: state.users.map(u => u.id === action.payload.userId ? {...u, name: action.payload.newValue} : u)
+            }
         }
         default:
             return state
@@ -77,7 +79,7 @@ const usersReducer = (state: UsersDataType = initialState, action: ActionCreator
 
 export const setUsersAC = (users: UserType[]) => ({type: SET_USERS, payload: {users}} as const)
 export const removeUserAC = (userId: string) => ({type: REMOVE_USER, payload: {userId}} as const)
-export const updateUserAC = (userId: string, newValue: string) => ({type: UPDATE_USER, payload: {newValue}} as const)
+export const updateUserAC = (userId: string, newValue: string) => ({type: UPDATE_USER, payload: {userId, newValue}} as const)
 export const toggleIsFetchingAC = (isFetching: boolean) => ({type: TOGGLE_IS_FETCHING, payload: {isFetching}} as const)
 export const toggleIsFollowingProgressAC = (isFetching: boolean, userId: number) => ({
     type: TOGGLE_IS_FOLLOWING_PROGRESS,
