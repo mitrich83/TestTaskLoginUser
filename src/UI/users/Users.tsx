@@ -6,7 +6,8 @@ import {AppRootStateType} from '../../BLL/store';
 import s from './Users.module.css'
 import Grid from '@mui/material/Grid';
 import {Paper} from '@mui/material';
-import {removeUserAC, updateUserAC} from '../../BLL/users-reducer';
+import {addUserAC, removeUserAC, updateUserAC} from '../../BLL/users-reducer';
+import {AddItemForm} from '../common/AddItemForm/AddItemForm';
 
 
 export const Users = () => {
@@ -18,13 +19,17 @@ export const Users = () => {
     }
 
     const removeUser = (userId: string) => {
-        debugger
         dispatch(removeUserAC(userId))
+    }
+
+    const addUser = (title: string)=> {
+        dispatch(addUserAC(title))
     }
 
     return (
         <div>
             <h2 className={s.title}>Users</h2>
+            <AddItemForm addItem={addUser}/>
             <Grid container spacing={3}>
                 {
                     allUsers.map(u => {

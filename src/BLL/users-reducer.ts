@@ -2,6 +2,7 @@
 
 const SET_USERS = 'USERS/SET-USERS'
 const REMOVE_USER = 'USERS/REMOVE-USER'
+const ADD_USER = 'USERS/ADD-USER'
 const UPDATE_USER = 'USERS/UPDATE-USER'
 const TOGGLE_IS_FETCHING = 'USERS/TOGGLE-IS-FETCHING'
 const TOGGLE_IS_FOLLOWING_PROGRESS = 'USERS/TOGGLE-IS-FOLLOWING-PROGRESS'
@@ -70,6 +71,17 @@ const usersReducer = (state: UsersDataType = initialState, action: ActionCreator
                 ...state, users: state.users.map(u => u.id === action.payload.userId ? {...u, name: action.payload.newValue} : u)
             }
         }
+        case ADD_USER: {
+            const newUser = {
+                id: '10',
+                name: action.payload.title,
+                city: 'Pushkino',
+                avatar: '',
+            }
+            return {
+                ...state, users: [newUser, ...state.users]
+            }
+        }
         default:
             return state
     }
@@ -79,6 +91,7 @@ const usersReducer = (state: UsersDataType = initialState, action: ActionCreator
 
 export const setUsersAC = (users: UserType[]) => ({type: SET_USERS, payload: {users}} as const)
 export const removeUserAC = (userId: string) => ({type: REMOVE_USER, payload: {userId}} as const)
+export const addUserAC = (title: string) => ({type: ADD_USER, payload: {title}} as const)
 export const updateUserAC = (userId: string, newValue: string) => ({type: UPDATE_USER, payload: {userId, newValue}} as const)
 export const toggleIsFetchingAC = (isFetching: boolean) => ({type: TOGGLE_IS_FETCHING, payload: {isFetching}} as const)
 export const toggleIsFollowingProgressAC = (isFetching: boolean, userId: number) => ({
@@ -111,11 +124,11 @@ export type UserType = {
 export type UsersDataType = {
     users: UserType[],
     isFetching: boolean
-
 }
 
 type SetUsersType = ReturnType<typeof setUsersAC>
 type RemoveUserType = ReturnType<typeof removeUserAC>
+type AddUserType = ReturnType<typeof addUserAC>
 type UpdateUserType = ReturnType<typeof updateUserAC>
 type ToggleIsFetchingType = ReturnType<typeof toggleIsFetchingAC>
 
@@ -123,5 +136,6 @@ type ToggleIsFetchingType = ReturnType<typeof toggleIsFetchingAC>
 export type ActionCreatorTypes =
     SetUsersType
     | RemoveUserType
+    | AddUserType
     | UpdateUserType
     | ToggleIsFetchingType
