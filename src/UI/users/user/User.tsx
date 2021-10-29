@@ -11,7 +11,7 @@ import { EditableSpan } from '../../common/EditableSpan/EditableSpan';
 export type UserPropsType = {
     userId:string,
     user: UserType
-    changeUserTitle: (newTitle: string) => void
+    changeUserTitle: (userId: string, newValue: string) => void
     removeUser: (taskId: string) => void
 }
 
@@ -25,14 +25,16 @@ export const User = (
     }: UserPropsType) => {
 
 
-    const onClickHandler = useCallback(() => removeUser(userId), [userId]);
+    const onClickHandler = () => {
+        debugger
+        removeUser(userId)
+    }
 
-    const onChangeHandler = (newTitle: string) => {
-        changeUserTitle(newTitle)
+    const onChangeHandler = (newValue: string) => {
+        changeUserTitle(userId, newValue)
     }
 
     return (
-        // <div className={s.user}>
         <div >
             <div className={s.userTop}>
                 <img className={s.userPhoto} src={user.avatar !== '' ? user.avatar : userAvatarDefault}

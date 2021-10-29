@@ -1,9 +1,8 @@
-import {Dispatch} from 'redux';
-import {usersAPI} from '../DAL/api';
 
 
 const SET_USERS = 'USERS/SET-USERS'
-const UPDATE_USER = 'USERS/UPDATE-USERS'
+const REMOVE_USER = 'USERS/REMOVE-USER'
+const UPDATE_USER = 'USERS/UPDATE-USER'
 const TOGGLE_IS_FETCHING = 'USERS/TOGGLE-IS-FETCHING'
 const TOGGLE_IS_FOLLOWING_PROGRESS = 'USERS/TOGGLE-IS-FOLLOWING-PROGRESS'
 
@@ -17,37 +16,37 @@ const initialState: UsersDataType = {
             avatar: '',
         },
         {
-            id: '0',
+            id: '1',
             name: 'Dmitry',
             city: 'Pushkino',
             avatar: '',
         },
         {
-            id: '0',
+            id: '2',
             name: 'Dmitry',
             city: 'Pushkino',
             avatar: '',
         },
         {
-            id: '0',
+            id: '3',
             name: 'Dmitry',
             city: 'Pushkino',
             avatar: '',
         },
         {
-            id: '0',
+            id: '4',
             name: 'Dmitry',
             city: 'Pushkino',
             avatar: '',
         },
         {
-            id: '0',
+            id: '5',
             name: 'Dmitry',
             city: 'Pushkino',
             avatar: '',
         },
         {
-            id: '0',
+            id: '6',
             name: 'Dmitry',
             city: 'Pushkino',
             avatar: '',
@@ -59,17 +58,16 @@ const initialState: UsersDataType = {
 const usersReducer = (state: UsersDataType = initialState, action: ActionCreatorTypes): UsersDataType => {
     switch (action.type) {
         case SET_USERS:
-        case TOGGLE_IS_FETCHING:
+
+
         case UPDATE_USER:
+        case TOGGLE_IS_FETCHING:
             return {...state, ...action.payload}
 
-        /*        case TOGGLE_IS_FOLLOWING_PROGRESS:
-                    return {
-                        ...state,
-                        followingInProgress: action.isFetching
-                            ? [...state.followingInProgress, action.userId]
-                            : state.followingInProgress.filter(id => id !== action.userId)
-                    }*/
+        case REMOVE_USER: {
+            debugger
+            return {...state, users: state.users.filter(u=> u.id !== action.payload.userId)}
+        }
         default:
             return state
     }
@@ -77,10 +75,11 @@ const usersReducer = (state: UsersDataType = initialState, action: ActionCreator
 
 // actions
 
-export const setUsers = (users: UserType[]) => ({type: SET_USERS, payload: {users}} as const)
-export const toggleIsFetching = (isFetching: boolean) => ({type: TOGGLE_IS_FETCHING, payload: {isFetching}} as const)
-export const changeNameUser = (title: string) => ({type: UPDATE_USER, payload: {title}} as const)
-export const toggleIsFollowingProgress = (isFetching: boolean, userId: number) => ({
+export const setUsersAC = (users: UserType[]) => ({type: SET_USERS, payload: {users}} as const)
+export const removeUserAC = (userId: string) => ({type: REMOVE_USER, payload: {userId}} as const)
+export const updateUserAC = (userId: string, newValue: string) => ({type: UPDATE_USER, payload: {newValue}} as const)
+export const toggleIsFetchingAC = (isFetching: boolean) => ({type: TOGGLE_IS_FETCHING, payload: {isFetching}} as const)
+export const toggleIsFollowingProgressAC = (isFetching: boolean, userId: number) => ({
     type: TOGGLE_IS_FOLLOWING_PROGRESS,
     isFetching,
     userId
@@ -90,10 +89,10 @@ export const toggleIsFollowingProgress = (isFetching: boolean, userId: number) =
 // thunks
 /*export const requestUsers = () => {
     return async (dispatch: Dispatch<ActionCreatorTypes>) => {
-        dispatch(toggleIsFetching(true))
+        dispatch(toggleIsFetchingAC(true))
         const data = await usersAPI.getUsers()
-        dispatch(toggleIsFetching(false))
-        dispatch(setUsers(data));
+        dispatch(toggleIsFetchingAC(false))
+        dispatch(setUsersAC(data));
     }
 }*/
 
@@ -113,12 +112,14 @@ export type UsersDataType = {
 
 }
 
-type SetUsersType = ReturnType<typeof setUsers>
-type ChangeNameUserType = ReturnType<typeof changeNameUser>
-type ToggleIsFetchingType = ReturnType<typeof toggleIsFetching>
+type SetUsersType = ReturnType<typeof setUsersAC>
+type RemoveUserType = ReturnType<typeof removeUserAC>
+type UpdateUserType = ReturnType<typeof updateUserAC>
+type ToggleIsFetchingType = ReturnType<typeof toggleIsFetchingAC>
 
 
 export type ActionCreatorTypes =
     SetUsersType
+    | RemoveUserType
+    | UpdateUserType
     | ToggleIsFetchingType
-    | ChangeNameUserType

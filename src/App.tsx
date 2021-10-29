@@ -7,12 +7,12 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import LinearProgress from '@mui/material/LinearProgress';
-import {Menu} from '@mui/icons-material';
+
 import {Redirect, Route, Switch} from 'react-router-dom';
 import {CircularProgress} from '@mui/material';
 import {Users} from './UI/users/Users';
 import {Login} from './UI/login/Login';
-import {UserType} from './DAL/api';
+
 
 
 
@@ -42,12 +42,6 @@ function App() {
       <div className="App">
         <AppBar position="static">
           <Toolbar>
-          {/*  <IconButton edge="start" color="inherit" aria-label="menu">
-              <Menu/>
-            </IconButton>
-            <Typography variant="h6">
-              News
-            </Typography>*/}
             {/*{isLoggedIn && */}
             <Button color="inherit" onClick={logoutHandler}>Log out</Button>
           </Toolbar>
