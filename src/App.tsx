@@ -12,20 +12,24 @@ import {Redirect, Route, Switch} from 'react-router-dom';
 import {CircularProgress} from '@mui/material';
 import {Users} from './UI/users/Users';
 import {Login} from './UI/login/Login';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppRootStateType} from './BLL/store';
 
 
 
 
 function App() {
-/*  const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(initializeAppTC())
+
+
+    // dispatch(initializeAppTC())
   }, [])
 
-  const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
-  const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
-  const isInitialized = useSelector<AppRootStateType>(state => state.app.isInitialized)*/
+/*  const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)*/
+/*  const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)*/
+/*  const isInitialized = useSelector<AppRootStateType>(state => state.app.isInitialized)*/
 
   const logoutHandler = () => {
     // dispatch(logoutTC())

@@ -1,18 +1,17 @@
-import React, {ChangeEvent, useCallback} from 'react';
+import React from 'react';
 import s from './User.module.css';
 import userAvatarDefault from './images/avatar.jpg'
-import {UserType} from '../../../BLL/users-reducer';
-
+import {UserType} from '../../../DAL/api';
 import IconButton from '@mui/material/IconButton';
 import {Delete} from '@mui/icons-material';
-import { EditableSpan } from '../../common/EditableSpan/EditableSpan';
+import {EditableSpan} from '../../common/EditableSpan/EditableSpan';
 
 
 export type UserPropsType = {
-    userId:string,
+    userId: number,
     user: UserType
-    changeUserTitle: (userId: string, newValue: string) => void
-    removeUser: (taskId: string) => void
+    changeUserTitle: (userId: number, newValue: string) => void
+    removeUser: (taskId: number) => void
 }
 
 export const User = (
@@ -26,35 +25,28 @@ export const User = (
 
 
     const onClickHandler = () => {
-        debugger
         removeUser(userId)
     }
 
     const onChangeHandler = (newValue: string) => {
+        debugger
         changeUserTitle(userId, newValue)
     }
 
     return (
-        <div >
+        <div>
             <div className={s.userTop}>
-                <img className={s.userPhoto} src={user.avatar !== '' ? user.avatar : userAvatarDefault}
-                />
+                <img className={s.userPhoto} src={user.avatar ? user.avatar : userAvatarDefault}/>
                 <IconButton onClick={onClickHandler}>
                     <Delete/>
                 </IconButton>
             </div>
-            <div>
+            <div className={s.user}>
                 <EditableSpan
                     title={'Name'}
                     value={user.name}
                     onChange={onChangeHandler}
                 />
-            </div>
-            <div>
-                <EditableSpan
-                    title={'City'}
-                    value={user.city}
-                    onChange={onChangeHandler}/>
             </div>
         </div>)
 }

@@ -28,7 +28,6 @@ export type LoginParamsType = {
     email: string,
     password: string,
     rememberMe: boolean,
-    captcha?: string,
 }
 
 export type AuthACTypes =
@@ -47,7 +46,6 @@ export const InitialState: InitialStateType = {
 const authReducer = (state = InitialState, action: AuthACTypes): InitialStateType => {
     switch (action.type) {
         case SET_USERS_DATA: {
-
             return {
                 ...state,
                 ...action.payload,

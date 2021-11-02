@@ -1,3 +1,7 @@
+import {Dispatch} from 'redux';
+import {usersAPI, UserType} from '../DAL/api';
+import {log} from 'util';
+import {v1} from 'uuid';
 
 
 const SET_USERS = 'USERS/SET-USERS'
@@ -8,79 +12,30 @@ const TOGGLE_IS_FETCHING = 'USERS/TOGGLE-IS-FETCHING'
 const TOGGLE_IS_FOLLOWING_PROGRESS = 'USERS/TOGGLE-IS-FOLLOWING-PROGRESS'
 
 
-const initialState: UsersDataType = {
-    users: [
-        {
-            id: '0',
-            name: 'Dmitry',
-            city: 'Pushkino',
-            avatar: '',
-        },
-        {
-            id: '1',
-            name: 'Dmitry',
-            city: 'Pushkino',
-            avatar: '',
-        },
-        {
-            id: '2',
-            name: 'Dmitry',
-            city: 'Pushkino',
-            avatar: '',
-        },
-        {
-            id: '3',
-            name: 'Dmitry',
-            city: 'Pushkino',
-            avatar: '',
-        },
-        {
-            id: '4',
-            name: 'Dmitry',
-            city: 'Pushkino',
-            avatar: '',
-        },
-        {
-            id: '5',
-            name: 'Dmitry',
-            city: 'Pushkino',
-            avatar: '',
-        },
-        {
-            id: '6',
-            name: 'Dmitry',
-            city: 'Pushkino',
-            avatar: '',
-        }
-    ],
-    isFetching: true,
-}
+const initialState: UserType[] = []
 
-const usersReducer = (state: UsersDataType = initialState, action: ActionCreatorTypes): UsersDataType => {
+
+const usersReducer = (state = initialState, action: ActionCreatorTypes): UserType[] => {
     switch (action.type) {
-        case SET_USERS:
-        case TOGGLE_IS_FETCHING:
-            return {...state, ...action.payload}
+        case SET_USERS: {
+            return [...state, ...action.payload.users]
+        }
+        /*        case TOGGLE_IS_FETCHING:
+                    return {...state, ...action.payload}*/
 
         case REMOVE_USER: {
             debugger
-            return {...state, users: state.users.filter(u=> u.id !== action.payload.userId)}
+            return [...state.filter(u => u.id !== action.payload.userId)]
         }
         case UPDATE_USER: {
-            return {
-                ...state, users: state.users.map(u => u.id === action.payload.userId ? {...u, name: action.payload.newValue} : u)
-            }
+            debugger
+            return [
+                ...state.map(u => u.id === action.payload.userId ? {...u, name: action.payload.name} : u)
+            ]
         }
         case ADD_USER: {
-            const newUser = {
-                id: '10',
-                name: action.payload.title,
-                city: 'Pushkino',
-                avatar: '',
-            }
-            return {
-                ...state, users: [newUser, ...state.users]
-            }
+            debugger
+            return [...state, action.payload.newUser,]
         }
         default:
             return state
@@ -90,9 +45,12 @@ const usersReducer = (state: UsersDataType = initialState, action: ActionCreator
 // actions
 
 export const setUsersAC = (users: UserType[]) => ({type: SET_USERS, payload: {users}} as const)
-export const removeUserAC = (userId: string) => ({type: REMOVE_USER, payload: {userId}} as const)
-export const addUserAC = (title: string) => ({type: ADD_USER, payload: {title}} as const)
-export const updateUserAC = (userId: string, newValue: string) => ({type: UPDATE_USER, payload: {userId, newValue}} as const)
+export const removeUserAC = (userId: number) => ({type: REMOVE_USER, payload: {userId}} as const)
+export const addUserAC = (newUser: UserType) => ({type: ADD_USER, payload: {newUser}} as const)
+export const updateUserAC = (userId: number, name: string) => ({
+    type: UPDATE_USER,
+    payload: {userId, name}
+} as const)
 export const toggleIsFetchingAC = (isFetching: boolean) => ({type: TOGGLE_IS_FETCHING, payload: {isFetching}} as const)
 export const toggleIsFollowingProgressAC = (isFetching: boolean, userId: number) => ({
     type: TOGGLE_IS_FOLLOWING_PROGRESS,
@@ -102,30 +60,57 @@ export const toggleIsFollowingProgressAC = (isFetching: boolean, userId: number)
 
 
 // thunks
-/*export const requestUsers = () => {
+export const fetchUsersTC = () => {
     return async (dispatch: Dispatch<ActionCreatorTypes>) => {
+        debugger
         dispatch(toggleIsFetchingAC(true))
         const data = await usersAPI.getUsers()
+        debugger
         dispatch(toggleIsFetchingAC(false))
-        dispatch(setUsersAC(data));
+        dispatch(setUsersAC(data.data))
+        debugger
+        console.log(data.data);
     }
-}*/
+}
+
+export const removeUserTC = (userId: number) => {
+    return async (dispatch: Dispatch<ActionCreatorTypes>) => {
+        const res = await usersAPI.deleteUser(userId)
+        if (res.status === 200) {
+            dispatch(removeUserAC(userId))
+        }
+    }
+}
+
+export const updateUserTC = (userId: number, name: string) => {
+    debugger
+    return async (dispatch: Dispatch<ActionCreatorTypes>) => {
+        const res = await usersAPI.updateUser(userId, name)
+        debugger
+        if (res.data.resultCode === 200) {
+            dispatch(updateUserAC(userId, name))
+        }
+    }
+}
+
+export const createUserTC = (newValue: string) => {
+    debugger
+    return async (dispatch: Dispatch<ActionCreatorTypes>) => {
+        debugger
+        const newUser = {
+            id: Date.now(),
+            name: newValue,
+            avatar: ''
+
+        }
+        const res = await usersAPI.createUser(newUser)
+        dispatch(addUserAC(res.data))
+    }
+}
 
 export default usersReducer
 
 // types
-export type UserType = {
-    id: string,
-    name: string,
-    city: string
-    avatar: string,
-}
-
-export type UsersDataType = {
-    users: UserType[],
-    isFetching: boolean
-}
-
 type SetUsersType = ReturnType<typeof setUsersAC>
 type RemoveUserType = ReturnType<typeof removeUserAC>
 type AddUserType = ReturnType<typeof addUserAC>

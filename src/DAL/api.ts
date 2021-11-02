@@ -1,12 +1,8 @@
-import axios from 'axios';
+import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
 
 const instance = axios.create({
-    withCredentials: true,
-    baseURL: `https://social-network.samuraijs.com/api/1.0/`,
-    headers: {
-        'API-key': 'eccbb3eb-58c4-4ed7-895f-7ce56bc6ba31'
-    }
-
+    baseURL: `http://localhost:3001/`,
+    // baseURL: `https://jsonplaceholder.typicode.com/`,
 })
 
 export const authAPI = {
@@ -23,31 +19,38 @@ export const authAPI = {
 
 export const usersAPI = {
     getUsers() {
-        return instance.get(`users`)
-            .then(res => res.data)
+        return instance.get<UserType[]>(`users`)
     },
-    deleteUser(userId: string) {
-        return instance.delete<ResponseType>(`users/${userId}`);
+    deleteUser(userId: number) {
+        debugger
+        return instance.delete<UserType[]>(`users/${userId}`);
     },
-    createUser(userId: string, title: string) {
-        return instance.post<{ title: string }, { data: ResponseType<{ item: UserType }> }>(`users/${userId}/user`, {title});
+
+    updateUser(userId: number, newValue:string) {
+        debugger
+        return instance.put<{ newValue: string }, { data: ResponseType }>(`users/${userId}`, {newValue});
     },
-    updateUser(userId: string) {
-        return instance.put< { data: ResponseType<{ item: UserType }> }>(`todo-lists/${userId}/tasks/`);
-    }
+    createUser(newUser: UserType) {
+        return instance.post(`users`, {...newUser});
+    },
 }
 
 export type UserType = {
-    id: string,
-    avatar: string,
+    id: number,
     name: string,
-    city: string,
+    avatar: string,
+
+
+/*    id: string,
+    name: string,
+    phone: string
+    email: string,
+    avatar: string*/
 }
 
 export type ResponseType<D = {}> = {
     resultCode: number
     messages: Array<string>
-    fieldsErrors: Array<string>
     data: D
 }
 
