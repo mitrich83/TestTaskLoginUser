@@ -1,7 +1,6 @@
 import {Dispatch} from 'redux';
 import {usersAPI, UserType} from '../DAL/api';
-import {log} from 'util';
-import {v1} from 'uuid';
+import {AppRootStateType} from './store';
 
 
 const SET_USERS = 'USERS/SET-USERS'
@@ -13,7 +12,6 @@ const TOGGLE_IS_FOLLOWING_PROGRESS = 'USERS/TOGGLE-IS-FOLLOWING-PROGRESS'
 
 
 const initialState: UserType[] = []
-
 
 const usersReducer = (state = initialState, action: ActionCreatorTypes): UserType[] => {
     switch (action.type) {
@@ -34,8 +32,7 @@ const usersReducer = (state = initialState, action: ActionCreatorTypes): UserTyp
             ]
         }
         case ADD_USER: {
-            debugger
-            return [...state, action.payload.newUser,]
+            return [action.payload.newUser, ...state]
         }
         default:
             return state
@@ -83,25 +80,26 @@ export const removeUserTC = (userId: number) => {
 }
 
 export const updateUserTC = (userId: number, name: string) => {
-    debugger
-    return async (dispatch: Dispatch<ActionCreatorTypes>) => {
-        const res = await usersAPI.updateUser(userId, name)
-        debugger
-        if (res.data.resultCode === 200) {
+    return async (dispatch: Dispatch<ActionCreatorTypes> ,getState: () => AppRootStateType) => {
+        const user = getState().users.find(u=> u.id === userId)
+        if (!user) {
+            console.warn('user not found in the state')
+            return
+        }
+        const newUserData = {...user, name}
+        const res = await usersAPI.updateUser(userId, newUserData)
+        if (res.status === 200) {
             dispatch(updateUserAC(userId, name))
         }
     }
 }
 
 export const createUserTC = (newValue: string) => {
-    debugger
     return async (dispatch: Dispatch<ActionCreatorTypes>) => {
-        debugger
         const newUser = {
             id: Date.now(),
             name: newValue,
             avatar: ''
-
         }
         const res = await usersAPI.createUser(newUser)
         dispatch(addUserAC(res.data))

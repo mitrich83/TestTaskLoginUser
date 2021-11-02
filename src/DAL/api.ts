@@ -26,9 +26,9 @@ export const usersAPI = {
         return instance.delete<UserType[]>(`users/${userId}`);
     },
 
-    updateUser(userId: number, newValue:string) {
-        debugger
-        return instance.put<{ newValue: string }, { data: ResponseType }>(`users/${userId}`, {newValue});
+    updateUser(userId: number, newUserData: UserType) {
+        return instance.put<UserType>(`users/${userId}`, {...newUserData});
+
     },
     createUser(newUser: UserType) {
         return instance.post(`users`, {...newUser});
@@ -39,13 +39,6 @@ export type UserType = {
     id: number,
     name: string,
     avatar: string,
-
-
-/*    id: string,
-    name: string,
-    phone: string
-    email: string,
-    avatar: string*/
 }
 
 export type ResponseType<D = {}> = {
